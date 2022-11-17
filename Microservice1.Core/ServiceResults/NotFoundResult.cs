@@ -25,4 +25,22 @@ namespace Microservice1.Core.ServiceResults
         }
 
     }
+    public class NotFoundResult : IServiceResult 
+    {
+        private readonly string _reason;
+
+        public NotFoundResult(string reason)
+        {
+            _reason = reason;
+        }
+        public JsonResult ToApiResult()
+        {
+            return new JsonResult(_reason)
+            {
+                ContentType = "application/json",
+                StatusCode = 404
+            };
+        }
+
+    }
 }

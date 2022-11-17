@@ -1,4 +1,4 @@
-﻿namespace MicroService1.Models
+﻿namespace MicroService1.Models.ResponseModels
 {
     public class StudentCoursesResponseModel
     {

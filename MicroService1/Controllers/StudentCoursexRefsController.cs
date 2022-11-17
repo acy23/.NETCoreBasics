@@ -7,8 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MicroService1.Data.Context;
 using MicroService1.Data.Entities;
-using MicroService1.Models;
 using MicroService1.Services.Abstractions;
+using MicroService1.Models.ResponseModels;
+using MicroService1.Models.RequestModels;
 
 namespace MicroService1.Controllers
 {
@@ -36,28 +37,20 @@ namespace MicroService1.Controllers
 
         // GET: api/StudentCoursexRefs/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<StudentCoursexRef>> GetStudentCoursexRef(int id)
+        public async Task<ActionResult<StudentCoursesResponseModel>> GetStudentCoursexRef(StudentCourseGetByIdRequest request)
         {
-            if (_context.StudentCoursexRef == null)
-            {
-                return NotFound();
-            }
-            var studentCoursexRef = await _context.StudentCoursexRef.FindAsync(id);
+            var serviceResult = await _userCourseService.GetStudentCoursexRefById(request);
 
-            if (studentCoursexRef == null)
-            {
-                return NotFound();
-            }
-
-            return studentCoursexRef;
+            return serviceResult.ToApiResult();
+        
         }
 
         // PUT: api/StudentCoursexRefs/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut]
-        public async Task<IActionResult> PutStudentCoursexRef(StudentCoursexRef studentCoursexRef)
+        public async Task<IActionResult> PutStudentCoursexRef(StudentCourseUpdateRequest request)
         {
-            var serviceResponse = await _userCourseService.UpdateItem(studentCoursexRef);
+            var serviceResponse = await _userCourseService.UpdateItem(request);
 
             return serviceResponse.ToApiResult();
 
@@ -66,41 +59,21 @@ namespace MicroService1.Controllers
         // POST: api/StudentCoursexRefs
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<StudentCoursexRef>> PostStudentCoursexRef(StudentCoursexRef studentCoursexRef)
+        public async Task<ActionResult<StudentCoursexRef>> PostStudentCoursexRef(StudentCourseCreateRequest request)
         {
-            if (_context.StudentCoursexRef == null)
-            {
-                return Problem("Entity set 'LectureContext.StudentCoursexRef'  is null.");
-            }
-            _context.StudentCoursexRef.Add(studentCoursexRef);
-            await _context.SaveChangesAsync();
+            var serviceResponse = await _userCourseService.CreateItem(request);
 
-            return CreatedAtAction("GetStudentCoursexRef", new { id = studentCoursexRef.Id }, studentCoursexRef);
+            return serviceResponse.ToApiResult();
         }
 
         // DELETE: api/StudentCoursexRefs/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteStudentCoursexRef(int id)
+        public async Task<IActionResult> DeleteStudentCoursexRef(StudentCourseDeleteRequest request)
         {
-            if (_context.StudentCoursexRef == null)
-            {
-                return NotFound();
-            }
-            var studentCoursexRef = await _context.StudentCoursexRef.FindAsync(id);
-            if (studentCoursexRef == null)
-            {
-                return NotFound();
-            }
+            var serviceResponse = await _userCourseService.DeleteItem(request);
 
-            _context.StudentCoursexRef.Remove(studentCoursexRef);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return serviceResponse.ToApiResult();
         }
 
-        private bool StudentCoursexRefExists(int id)
-        {
-            return (_context.StudentCoursexRef?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
     }
 }

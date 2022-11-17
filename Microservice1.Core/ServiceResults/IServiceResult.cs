@@ -11,4 +11,8 @@ namespace Microservice1.Core.ServiceResults
     {
         JsonResult ToApiResult();
     }
+    public interface IServiceResult
+    {
+        JsonResult ToApiResult();
+    }
 }
